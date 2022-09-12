@@ -1,9 +1,9 @@
 ---
 - name: Build python virtual environment
-  import_tasks: venv/cloud_hetzner.yml
+  import_tasks: venv_hetzner.yml
 
 - name: Include prompts
-  import_tasks: prompts/cloud_hetzner.yml
+  import_tasks: prompts_hetzner.yml
 
 - name: Create SSH keys
   local_action:
