@@ -1,0 +1,24 @@
+---
+galaxy_info:
+  author: Brandon Shipley
+  description: Ansible role to setup VPS from various cloud providers - cloud roles from trailofbits/algo mainly
+  company: Enter company name
+  license: Apache Software License 2.0
+  min_ansible_version: 2.8
+  role_name: ansible_role_cloud_vps
+
+  # platforms:
+  # - name: Fedora
+  #   versions:
+  #   - all
+  #   - 25
+  # - name: SomePlatform
+  #   versions:
+  #   - all
+  #   - 1.0
+  #   - 7
+  #   - 99.99
+
+  galaxy_tags: []
+
+dependencies: []
