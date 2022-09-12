@@ -1,0 +1,65 @@
+---
+- name: Build python virtual environment
+  import_tasks: venv/cloud_hetzner.yml
+
+- name: Include prompts
+  import_tasks: prompts/cloud_hetzner.yml
+
+- name: Create SSH keys
+  local_action:
+    module: hcloud_ssh_key
+    api_token: "{{ hcloud_token }}"
+    name: "{{ item.name }}"
+    public_key: "{{ item.key }}"
+  loop: "{{ ssh_keys }}"
+  run_once: yes
+
+- name: Get VM info - check if exists
+  local_action:
+    module: hcloud_server_info
+    api_token: "{{ hcloud_token }}"
+    name: "{{ hcloud_vm_name }}"
+  register: info_vm
+
+- name: Print the gathered infos
+  debug:
+    var: info_vm
+
+- name: Register the ip address if VM already exists
+  add_host:
+    hostname: '{{ hostvars[item].inventory_hostname }}'
+    ansible_host: '{{ hostvars[item].info_vm.hcloud_server_info[0].ipv4_address }}'
+  when: hostvars[item].info_vm.hcloud_server_info|count == 1
+  with_items: "{{ ansible_play_hosts }}"
+
+- name: Create a server
+  local_action:
+    module: hcloud_server
+    api_token: "{{ hcloud_token }}"
+    name: "{{ hcloud_vm_name }}"
+    server_type: "{{ hcloud_server_type }}"
+    location: "{{ hcloud_server_type }}"
+    image: "{{ hcloud_image }}"
+    state: present
+    ssh_keys: "{{ ssh_keys|map(attribute='name')|list }}"
+  register: create_vm
+
+- name: Create a server...
+  hcloud_server:
+    name: "{{ algo_server_name }}"
+    location: "{{ algo_hcloud_region }}"
+    server_type: "{{ cloud_providers.hetzner.server_type }}"
+    image: "{{ cloud_providers.hetzner.image }}"
+    state: present
+    api_token: "{{ algo_hcloud_token }}"
+    ssh_keys: "{{ hcloud_ssh_key.hcloud_ssh_key.name }}"
+    user_data: "{{ lookup('template', 'files/cloud-init/base.yml') }}"
+    labels:
+      Environment: algo
+  register: hcloud_server
+
+- set_fact:
+    cloud_instance_ip: "{{ hcloud_server.hcloud_server.ipv4_address }}"
+    ansible_ssh_user: algo
+    ansible_ssh_port: "{{ ssh_port }}"
+    cloudinit: true

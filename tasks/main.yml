@@ -1,2 +1,6 @@
 ---
 # tasks file for ansible_role_cloud_vps
+- include: cloud_hetzner.yml
+  #  become: true
+  when: harden_os
+  tags: harden
