@@ -3,5 +3,4 @@
 - include: cloud_hetzner.yml
   when:
     - hcloud_create
-    - hcloud_token
   tags: hetzner
