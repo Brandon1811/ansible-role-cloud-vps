@@ -3,7 +3,7 @@
     prompt: |
       Enter your API token (https://trailofbits.github.io/algo/cloud-hetzner.html#api-token):
     echo: false
-  register: hcloud_token
+  register: _hcloud_token
   when:
     - hcloud_token is undefined
     - lookup('env','HCLOUD_TOKEN')|length <= 0
