@@ -46,24 +46,27 @@
 
 - name: scan and register ssh key from new vm
   local_action:
-    command: "ssh-keyscan {{ansible_host|default(inventory_hostname)}}"
+    module: ansible.builtin.command
+    cmd: "ssh-keyscan {{ansible_host|default(inventory_hostname)}}"
   register: "host_keys"
   changed_when: false
 
 - name: touch known hosts file
   local_action:
-    file: path={{known_hosts}} state=touch
+    module: ansible.builtin.file
+    path: "{{known_hosts}}"
+    state: touch
   run_once: true
 
 - name: add to known hosts file
   local_action:
-    blockinfile:
-      dest: "{{known_hosts}}"
-      marker: "# {mark} This part managed by Ansible"
-      block: |
-        {% for h in groups['all'] if hostvars[h].host_keys is defined %}  
-        {{ hostvars[h].host_keys.stdout }}  
-        {% endfor %}
+    module: ansible.builtin.blockinfile
+    dest: "{{known_hosts}}"
+    marker: "# {mark} This part managed by Ansible"
+    block: |
+      {% for h in groups['all'] if hostvars[h].host_keys is defined %}  
+      {{ hostvars[h].host_keys.stdout }}  
+      {% endfor %}
   run_once: true
 
 - set_fact:
