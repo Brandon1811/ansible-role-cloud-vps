@@ -53,6 +53,13 @@
   register: "host_keys"
   changed_when: false
 
+
+- name: Check that the known hosts file exists
+  local_action:
+    module: ansible.builtin.stat
+    path: "{{known_hosts}}"
+  register: known_hosts_stat
+
 - name: touch known hosts file
   become: no
   local_action:
@@ -60,6 +67,7 @@
     path: "{{known_hosts}}"
     state: touch
   run_once: true
+  when: known_hosts_stat.stat.exists
 
 - name: add to known hosts file
   local_action:
