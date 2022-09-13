@@ -44,7 +44,7 @@
     ssh_keys: "{{ ssh_keys|map(attribute='name')|list }}"
   register: create_vm
 
-- name: scan and register ssh key
+- name: scan and register ssh key from new vm
   local_action:
     command: "ssh-keyscan {{ansible_host|default(inventory_hostname)}}"
   register: "host_keys"
