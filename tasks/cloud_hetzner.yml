@@ -45,6 +45,7 @@
   register: create_vm
 
 - set_fact:
-    cloud_instance_ip: "{{ hcloud_server.hcloud_server.ipv4_address }}"
-#    ansible_ssh_port: "{{ ssh_port }}"
-#    cloudinit: true
+    cloud_instance_ip: "{{ create_vm.hcloud_server.ipv4_address }}"
+    ansible_ssh_user: algo
+    ansible_ssh_port: "{{ ssh_port }}"
+    cloudinit: true
