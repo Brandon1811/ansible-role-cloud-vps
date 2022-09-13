@@ -22,12 +22,12 @@
 
 - name: Set facts about the regions
   set_fact:
-    hcloud_regions: "{{ _hcloud_regions | sort(attribute='location') }}"
+    hcloud_regions: "{{ _hcloud_regions.hcloud_datacenter_info | sort(attribute='location') }}"
 
 - name: Set default region
   set_fact:
     default_region: >-
-      {% for r in hcloud_regions %}
+      {% for r in _hcloud_regions.hcloud_datacenter_info %}
       {%- if r['location'] == "nbg1" %}{{ loop.index }}{% endif %}
       {%- endfor %}
   when:
@@ -35,7 +35,7 @@
 - pause:
     prompt: |
       What region should the server be located in?
-        {% for r in hcloud_regions %}
+        {% for r in _hcloud_regions.hcloud_datacenter_info %}
         {{ loop.index }}. {{ r['location'] }}     {{ r['description'] }}
         {% endfor %}
 
