@@ -54,6 +54,7 @@
   changed_when: false
 
 - name: touch known hosts file
+  become: no
   local_action:
     module: ansible.builtin.file
     path: "{{known_hosts}}"
