@@ -47,7 +47,9 @@
 - name: scan and register ssh key from new vm
   local_action:
     module: ansible.builtin.command
-    cmd: "ssh-keyscan {{ansible_host|default(inventory_hostname)}}"
+    argv:
+      - ssh-keyscan
+      - "{{ansible_host|default(inventory_hostname)}}"
   register: "host_keys"
   changed_when: false
 
