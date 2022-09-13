@@ -10,13 +10,13 @@
 
 - name: Get regions
   local_action:
-    module: hcloud_datacenter_facts
+    module: hcloud_datacenter_info
     api_token: "{{ hcloud_token }}"
   register: _hcloud_regions
 
 - name: Set facts about the regions
   set_fact:
-    hcloud_regions: "{{ hcloud_datacenter_facts | sort(attribute='location') }}"
+    hcloud_regions: "{{ _hcloud_regions | sort(attribute='location') }}"
 
 - name: Set default region
   set_fact:
