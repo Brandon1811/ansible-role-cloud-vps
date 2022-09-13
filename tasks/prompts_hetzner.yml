@@ -8,11 +8,17 @@
     - hcloud_token is undefined
     - lookup('env','HCLOUD_TOKEN')|length <= 0
 
+
+
 - name: Get regions
   local_action:
     module: hcloud_datacenter_info
     api_token: "{{ hcloud_token }}"
   register: _hcloud_regions
+
+- name: Print the regions
+  debug:
+    var: _hcloud_regions
 
 - name: Set facts about the regions
   set_fact:
