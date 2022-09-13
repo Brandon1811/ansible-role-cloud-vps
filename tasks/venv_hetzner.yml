@@ -1,6 +1,7 @@
 ---
 - name: Install requirements
-  pip:
+  local_action:
+    module: pip
     name:
       - hcloud
     state: latest
