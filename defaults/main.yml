@@ -4,3 +4,7 @@ hcloud_create_volume: no
 hcloud_volume_name: hcloudvolume
 hcloud_vm_size_gb: 0
 hcloud_volume_mount: /mnt/hcloud_volume
+
+hcloud_vm_private_ip: 192.168.0.10
+hcloud_network_name: hcloudnet
+hcloud_create_network: false

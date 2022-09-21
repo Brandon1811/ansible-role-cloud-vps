@@ -44,6 +44,15 @@
     ssh_keys: "{{ ssh_keys|map(attribute='name')|list }}"
   register: create_vm
 
+- name: Create network
+  local_action:
+    module: hcloud_server_network
+    network: "{{ hcloud_network_name }}"
+    server: "{{ hcloud_vm_name }}"
+    ip: "{{ hcloud_vm_private_ip }}"
+    state: present
+  when: hcloud_create_network and hcloud_network_name and hcloud_vm_private_ip
+
 - name: Create volume
   local_action:
     module: hcloud_volume
