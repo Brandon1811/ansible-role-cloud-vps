@@ -1,2 +1,6 @@
 ---
 # defaults file for ansible_role_cloud_vps
+hcloud_create_volume: no
+hcloud_volume_name: hcloudvolume
+hcloud_vm_size_gb: 0
+hcloud_volume_mount: /mnt/hcloud_volume
