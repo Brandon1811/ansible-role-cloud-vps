@@ -47,6 +47,7 @@
 - name: Create network
   local_action:
     module: hcloud_server_network
+    api_token: "{{ hcloud_token }}"
     network: "{{ hcloud_network_name }}"
     server: "{{ hcloud_vm_name }}"
     ip: "{{ hcloud_vm_private_ip }}"
