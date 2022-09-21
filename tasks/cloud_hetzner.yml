@@ -44,6 +44,45 @@
     ssh_keys: "{{ ssh_keys|map(attribute='name')|list }}"
   register: create_vm
 
+- name: Create volume
+  local_action:
+    module: hcloud_volume
+    api_token: "{{ hcloud_token }}"
+    name: "{{ hcloud_volume_name }}"
+    format: ext4
+    server: "{{ hcloud_vm_name }}"
+    size: "{{ hcloud_vm_size_gb }}"
+    state: present
+  register: info_volume
+  when: hcloud_create_volume and hcloud_volume_name
+
+- name: Print the gathered infos
+  debug:
+    var: info_volume
+  when: hcloud_create_volume and hcloud_volume_name
+
+- name: Export device name
+  set_fact:
+    device_name: "{{ info_volume.hcloud_volume.linux_device }}"
+  when: hcloud_create_volume and hcloud_volume_name
+
+- name: Format and resize the volume if necessary
+  community.general.filesystem:
+    fstype: ext4
+    dev: "{{ device_name }}"
+    state: present
+    resizefs: yes
+  when: hcloud_create_volume and hcloud_volume_name
+
+- name: Mount the volume
+  mount:
+    src: "{{ device_name }}"
+    state: mounted
+    fstype: ext4
+    path: "{{ hcloud_volume_mount }}"
+    opts: 'discard,nofail,defaults'
+  when: hcloud_create_volume and hcloud_volume_name and hcloud_volume_mount
+
 - name: scan and register ssh key from new vm
   local_action:
     module: ansible.builtin.command
@@ -79,6 +118,7 @@
       {{ hostvars[h].host_keys.stdout }}  
       {% endfor %}
   run_once: true
+  when: known_hosts_stat.stat.exists
 
 - set_fact:
     cloud_instance_ip: "{{ create_vm.hcloud_server.ipv4_address }}"
